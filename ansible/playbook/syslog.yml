@@ -1,0 +1,18 @@
+# Instalar Rsyslog e configurar envio dos logs para servidor centralizado
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Instalar pacote Rsyslog
+    package:
+      name: rsyslog
+      state: present
+  - name: Adicionar parametro para envio dos logs
+    lineinfile:
+      dest: /etc/rsyslog.conf
+      insertafter: EOF
+      line: '*.* @IP-SERVIDOR:1514;RSYSLOG_SyslogProtocol23Format'
+  - name: Restart do servico Rsyslog
+    service:
+      name: rsyslog
+      state: restarted

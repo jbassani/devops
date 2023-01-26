@@ -1,0 +1,21 @@
+# Alterar o IP ou Hostname do servidor de LOGs remoto
+---
+host_old = "192.168.0.1"
+host_new = "172.16.1.1"
+
+- hosts: all
+  become: yes
+  tasks:
+  - name: Alterar ip ou hostname do servidor de logs remoto
+    lineinfile:
+      path: '{{ item.path}}'
+      line: '{{ item.line }}'
+      regex: '{{ item.regex }}'
+      loop:
+      - path: /etc/rsyslog.conf
+  	line: '*.* @{{host_new}}:1514;RSYSLOG_SyslogProtocol23Format'
+  	regex: '\*\.\*\s*@{{host_old}}'
+  - name: Restart do servico Rsyslog
+    service:
+      name: rsyslog
+      state: restarted

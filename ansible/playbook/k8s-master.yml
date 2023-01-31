@@ -1,0 +1,39 @@
+- name: Instalar Kubernetes 
+  hosts: k8s-nodes
+  become: yes
+  
+  tasks:
+  - name: Instalar Docker
+    package:
+      name: docker
+      state: present
+      
+  - name: Habilitar e inicializar servico Docker
+    service:
+      name: docker
+      state: started
+      enabled: yes
+      
+  - name: Adicionar repositorio Kubernetes
+    yum_repository:
+      name: kubernetes
+      description: Kubernetes Repository
+      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      gpgcheck: yes
+      gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      enabled: yes
+      
+  - name: Instalar componentes Kubernetes
+    package:
+      name:
+        - kubelet
+        - kubeadm
+        - kubectl
+      state: present
+      
+  - name: Habilitar e inicializar servico Kubelet
+    service:
+      name: kubelet
+      state: started
+      enabled: yes
+

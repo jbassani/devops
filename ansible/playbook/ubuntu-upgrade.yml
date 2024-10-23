@@ -1,0 +1,10 @@
+- hosts: all
+  become: true
+  tasks:
+  - name: Update repository and cache 
+    apt: update_cache=yes state=latest force_apt_get=yes cache_valid_time=3600
+  - name: Upgrade all packages
+    apt: upgrade=dist force_apt_get=yes
+  - name: Check reboot
+    register: reboot_required_file
+    stat: path=/var/run/reboot-required

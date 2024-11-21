@@ -1,0 +1,14 @@
+# ansible-playbook -vv /etc/ansible/playbooks/docker-pull.yml -l server -e projeto=teste
+- hosts: docker
+  become: true
+  tasks:
+  - name: Pull Docker compose 
+    community.docker.docker_compose_v2_pull:
+      project_src: "/container/{{ projeto }}/"
+    register: output
+
+  - name: Restart Docker compose 
+    community.docker.docker_compose_v2:
+      project_src: "/container/{{ projeto }}/"
+      state: restarted
+    register: output

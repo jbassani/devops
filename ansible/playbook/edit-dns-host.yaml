@@ -1,0 +1,29 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+    - name: Edit file host
+      ansible.builtin.replace:
+        path: /etc/hosts
+        regexp: '(192.168.0.70|172.20.0.11)'
+        replace: '172.20.1.11'
+    - name: Edit file resolv.conf MASTER
+      ansible.builtin.replace:
+        path: /etc/resolv.conf
+        regexp: '(192.168.0.1|172.20.0.1)'
+        replace: '172.20.1.1'
+    - name: Edit file resolv.conf SLAVE
+      ansible.builtin.replace:
+        path: /etc/resolv.conf
+        regexp: '(192.168.0.2|172.20.0.2)'
+        replace: '172.20.1.2'
+    - name: Edit file ifcfg-ens192 MASTER
+      ansible.builtin.replace:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ansible_default_ipv4.interface}}
+        regexp: '^DNS1\=(192.168.0.1|172.20.0.1)'
+        replace: 'DNS1=172.20.1.1'
+    - name: Edit file ifcfg-ens192 SLAVE
+      ansible.builtin.replace:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ansible_default_ipv4.interface}}
+        regexp: '^DNS2\=(192.168.0.2|172.20.0.2)'
+        replace: 'DNS2=172.20.1.2'

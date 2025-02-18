@@ -1,0 +1,16 @@
+---
+- hosts: all
+  remote_user: root
+  vars:
+    docker_host: "unix:///var/run/docker.sock"  # Definindo o socket do Docker
+  tasks:
+    - name: Get images name
+      command: docker container ls -a --format "{{ '{{' }}.Names{{ '}}' }}"
+      register: docker_images
+
+    - name: Restart dockers
+      docker_container:
+        name: "{{ item }}"
+        state: started
+      loop: "{{ docker_images.stdout_lines }}"
+      when: docker_images.stdout_lines | length > 0
